@@ -26,8 +26,11 @@ int valore = 0;
 int letturaPrecedente = HIGH;
 
 //valori temperatura
-int max = 30;
-int min = max - 3;
+int maxgiorno = 32;
+int mingiorno = maxgiorno - 3;
+
+int maxnotte = 25;
+int minnotte = maxnotte - 3;
 
 int luminosita = 0;
 
@@ -53,16 +56,15 @@ void setup() {
   pinMode (encoderA, INPUT_PULLUP); //encoder
   pinMode (encoderB, INPUT_PULLUP); //encoder
   dht.begin();
+  T0 = 25 + 273.15;                 //Temperature T0 from datasheet, conversion from Celsius to kelvin
 }
 
 
 void loop() {
   attuale = digitalRead(3);
   if (attuale == LOW && passato == HIGH) {
-    if (newcount == 2) {
+    if (newcount == 3) {
       newcount = 0;
-      Serial.print("contatore ");
-      Serial.println(newcount);
     } else {
       newcount = newcount + 1;
       lcd.clear();
@@ -73,51 +75,85 @@ void loop() {
   if (newcount == 0) {
     delay(250);
     float h = dht.readHumidity();
-    float tdht = dht.readTemperature();
+    float t = dht.readTemperature();
     float hic = dht.computeHeatIndex(t, h, false);
-    float t = temp();
+    //float t = temp();
     int state = digitalRead(7);
 
-    lcd.setCursor (0, 0); //stampo Temperatura resistore
-    lcd.print("T1: ");
-    lcd.print(t);
-    lcd.setCursor (8, 0);
-    lcd.print((char)223);
+    //lcd.setCursor (0, 0); //stampo Temperatura resistore
+    //lcd.print("T1: ");
+    //lcd.print(t);
+    //lcd.setCursor (8, 0);
+    //lcd.print((char)223);
 
-    lcd.setCursor (0, 1); //stampo temperatura dht11
-    lcd.print("T2: ");
-    lcd.print(tdht);
-    lcd.setCursor (8, 1);
+    lcd.setCursor (0, 0); //stampo temperatura dht11
+    lcd.print("Temp: "); 
+    lcd.print(t);
+    lcd.setCursor (11, 0);
     lcd.print((char)223);
     
-    lcd.setCursor (10, 1);  //stampo umidità
-    lcd.print("U: ");
+    lcd.setCursor (0, 1);  //stampo umidità
+    lcd.print("Umidita': "); 
     lcd.print(h);
+    lcd.setCursor (15, 1);
     lcd.print("%");
-    
-    if (t < min) {
-      digitalWrite(7, HIGH);
-      digitalWrite(6, LOW);
-      lcd.setCursor (14, 0);
-      lcd.print("ON");
-    } else {
-      if (t > max) {
-        digitalWrite(7, LOW);
+
+    //Temperatura se è giorno 8-23
+    if((rtc.getTime().hour < 23) && (rtc.getTime().hour > 8)){
+      Serial.println("giorno");
+       if (t < mingiorno) {
+        digitalWrite(7, HIGH);
         digitalWrite(6, LOW);
         lcd.setCursor (13, 0);
-        lcd.print("OFF");
+        lcd.print(" ON");
       } else {
-        if (t < max && t > min) {
-          if (state == HIGH) {
-            lcd.setCursor (14, 0);
-            lcd.print(" ON");
-          } else {
-            lcd.setCursor (13, 0);
-            lcd.print("OFF");
-          }
+        if (t > maxgiorno) {
+          digitalWrite(7, LOW);
+          digitalWrite(6, LOW);
+          lcd.setCursor (13, 0);
+          lcd.print("OFF");
         } else {
-          if (isnan(t)) {
-            digitalWrite(6, HIGH);
+          if (t < maxgiorno && t > mingiorno) {
+            if (state == HIGH) {
+              lcd.setCursor (13, 0);
+              lcd.print(" ON");
+            } else {
+              lcd.setCursor (13, 0);
+              lcd.print("OFF");
+            }
+          } else {
+            if (isnan(t)) {
+              digitalWrite(6, HIGH);
+            }
+          }
+        }
+      }
+    }else{
+      Serial.println("notte");
+       if (t < minnotte) {
+        digitalWrite(7, HIGH);
+        digitalWrite(6, LOW);
+        lcd.setCursor (13, 0);
+        lcd.print(" ON");
+      } else {
+        if (t > maxnotte) {
+          digitalWrite(7, LOW);
+          digitalWrite(6, LOW);
+          lcd.setCursor (13, 0);
+          lcd.print("OFF");
+        } else {
+          if (t < maxnotte && t > minnotte) {
+            if (state == HIGH) {
+              lcd.setCursor (13, 0);
+              lcd.print(" ON");
+            } else {
+              lcd.setCursor (13, 0);
+              lcd.print("OFF");
+            }
+          } else {
+            if (isnan(t)) {
+              digitalWrite(6, HIGH);
+            }
           }
         }
       }
@@ -129,17 +165,17 @@ void loop() {
     int n = digitalRead(encoderA);
     if ((letturaPrecedente == HIGH) && (n == LOW)) {
       if (digitalRead(encoderB) == HIGH) {
-        max--;
-        min--;
+        maxgiorno--;
+        mingiorno--;
       } else {
-        max++;
-        min++;
+        maxgiorno++;
+        mingiorno++;
       }
       Serial.println(valore);
     }
     digitalWrite(6, LOW);
     lcd.setCursor(6, 0);
-    lcd.print(max);
+    lcd.print(maxgiorno);
     lcd.setCursor(9, 0);
     lcd.print((char)223);
     lcd.setCursor(0, 1);
@@ -156,6 +192,7 @@ void loop() {
 
   //spengo-accendo lcd
   if (newcount == 3) {
+    lcd.clear();
     if (luminosita == 1) {
       lcd.noBacklight();
       luminosita = 0;
@@ -173,12 +210,13 @@ void loop() {
 void data() {
   lcd.setCursor (0, 0);
   lcd.print(rtc.getDateStr());
+  Serial.println(rtc.getDateStr());
   lcd.setCursor (0, 1);
   lcd.print(rtc.getTimeStr());
 }
 
-float temp() {
-  VRT = analogRead(A5);              //Acquisition analog value of VRT
+float temp(){
+  VRT = analogRead(A0);              //Acquisition analog value of VRT
   VRT = (5.00 / 1023.00) * VRT;      //Conversion to voltage
   VR = VCC - VRT;
   RT = VRT / (VR / R);               //Resistance of RT
