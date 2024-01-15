@@ -3,7 +3,7 @@
 
 A thermostat for terrarium made with arduino and 3d printed case
 ![profile pic](/img/large_display_thermostat_1.jpg)
-![profile pic](/img/large_display_thermostat_2.jpg)
+![profile pic](/img/large_display_Dht11.jpg)
 
 Component 1x:
 - Arduino
@@ -28,4 +28,4 @@ Extra parts:
 
 https://www.thingiverse.com/thing:5267160
 
-![profile pic](/img/large_display_thermostat_3.jpg)
+![profile pic](/img/large_display_thermostat__2.jpg)
