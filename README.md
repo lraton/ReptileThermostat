@@ -14,11 +14,6 @@ Component 1x:
 - Led
 - Encoder whit push button
 - Clock module
-- TP4056 (Battery charger) 
-- DC-DC 5V BOOST (voltage booster) 
-- 6x 6x6x8mm push button 
-- Micro usb smd 
-- Battery 3.7 lipo
 
 Extra parts:
 - Insert nut m2/m4
