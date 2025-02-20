@@ -1,5 +1,5 @@
 
-# Terrarium Thermostat
+# Reptile THermostat
 
 A thermostat for terrarium made with arduino and 3d printed case
 ![profile pic](/img/large_display_thermostat_1.jpg)
@@ -20,8 +20,7 @@ Extra parts:
 - Screw m2/m4
 
 ## 3D files
-
-https://www.thingiverse.com/thing:5267160
+https://www.printables.com/model/1199039-reptile-thermostat
 
 ![profile pic](/img/large_display_Dht11.jpg)
 ![profile pic](/img/large_display_thermostat__2.jpg)
