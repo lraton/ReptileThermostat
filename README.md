@@ -1,8 +1,10 @@
 # Reptile Thermostat
 
-A thermostat for a terrarium made with Arduino and a 3D-printed case.
+A thermostat for a terrarium made with Arduino and a **3D-printed case**.
 
-![Thermostat Front View](/img/large_display_thermostat_1.jpg)
+<p align="center">
+  <img src="/img/large_display_thermostat_1.jpg" alt="Thermostat Front View" width="500">
+</p>
 
 ## Components (1x each)
 - **Arduino Board** (Uno/Nano)
@@ -31,15 +33,24 @@ Below is the wiring setup for connecting the components:
 | **Relay**      | **D7**       | Controls heating elements |
 | **Buzzer**     | **D6**       | Alarm notification |
 
-![DHT11 Setup](/img/large_display_Dht11.jpg)
-![Thermostat Internal View](/img/large_display_thermostat__2.jpg)
+---
 
-## **3D Files**
-Download the **3D-printable case** from:
-[Printables - Reptile Thermostat](https://www.printables.com/model/1199039-reptile-thermostat)
+<p align="center">
+  <img src="/img/large_display_Dht11.jpg" alt="DHT11 Setup" width="500">
+</p>
+
+<p align="center">
+  <img src="/img/large_display_thermostat__2.jpg" alt="Thermostat Internal View" width="500">
+</p>
 
 ---
 
-This thermostat automatically regulates temperature based on the DHT11 sensor readings, switching the **relay on/off** depending on **day/night temperature thresholds**. The **encoder** allows easy adjustments, and the **LCD displays real-time values**.
+## **3D Files**
+Download the **3D-printable case** from:  
+📌 [Printables - Reptile Thermostat](https://www.printables.com/model/1199039-reptile-thermostat)
+
+---
+
+This thermostat **automatically regulates temperature** based on the DHT11 sensor readings, switching the **relay on/off** depending on **day/night temperature thresholds**. The **encoder** allows easy adjustments, and the **LCD displays real-time values**.
 
 ---
