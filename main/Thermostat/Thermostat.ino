@@ -59,8 +59,6 @@ void setup() {
 
   // Button and output pin configurations
   pinMode(3, INPUT_PULLUP);         // Page change button
-  pinMode(4, INPUT_PULLUP);         // Decrease temperature button
-  pinMode(5, INPUT_PULLUP);         // Increase temperature button
   pinMode(6, OUTPUT);               // Buzzer output
   pinMode(7, OUTPUT);               // Relay output
   pinMode(encoderA, INPUT_PULLUP);  // Encoder input A
