@@ -122,8 +122,9 @@ void firstMenu() {
     lcd.print("ERR");
   } else {
     digitalWrite(6, LOW);  // Turn off buzzer
-    // Daytime temperature control
+    //Check for day or night
     if ((rtc.getTime().hour < 23) && (rtc.getTime().hour > 8)) {
+      // Daytime temperature control
       Serial.println("Day mode");
       if (t < minDay) {
         digitalWrite(7, HIGH);  // Turn on relay and led
