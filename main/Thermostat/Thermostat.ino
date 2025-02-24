@@ -50,12 +50,15 @@ DHT dht(DHTPIN, DHTTYPE);
 DS1302 rtc(8, 9, 10);
 
 void setup() {
+  Serial.begin(9600);
+
   lcd.begin();
   lcd.backlight();
   rtc.halt(false);
   rtc.writeProtect(false);
 
-  Serial.begin(9600);
+
+  dht.begin();
 
   // Button and output pin configurations
   pinMode(3, INPUT_PULLUP);         // Page change button
@@ -63,8 +66,6 @@ void setup() {
   pinMode(7, OUTPUT);               // Relay output
   pinMode(encoderA, INPUT_PULLUP);  // Encoder input A
   pinMode(encoderB, INPUT_PULLUP);  // Encoder input B
-
-  dht.begin();
 }
 
 void loop() {
@@ -114,39 +115,43 @@ void firstMenu() {
   lcd.setCursor(15, 1);
   lcd.print("%");
 
-  // Daytime temperature control
-  if ((rtc.getTime().hour < 23) && (rtc.getTime().hour > 8)) {
-    Serial.println("Day mode");
-    if (t < minDay) {
-      digitalWrite(7, HIGH);  // Turn on relay
-      digitalWrite(6, LOW);   // Turn off buzzer
-      lcd.setCursor(13, 0);
-      lcd.print(" ON");
-    } else if (t > maxDay) {
-      digitalWrite(7, LOW);  // Turn off relay
-      digitalWrite(6, LOW);
-      lcd.setCursor(13, 0);
-      lcd.print("OFF");
-    } else {
-      lcd.setCursor(13, 0);
-      lcd.print(state == HIGH ? " ON" : "OFF");
-    }
+  // Check temp error
+  lcd.setCursor(13, 0);
+  if (isnan(t)) {
+    digitalWrite(6, HIGH);  // Turn on buzzer on temperature error
+    lcd.print("ERR");
   } else {
-    // Nighttime temperature control
-    Serial.println("Night mode");
-    if (t < minNight) {
-      digitalWrite(7, HIGH);
-      digitalWrite(6, LOW);
-      lcd.setCursor(13, 0);
-      lcd.print(" ON");
-    } else if (t > maxNight) {
-      digitalWrite(7, LOW);
-      digitalWrite(6, LOW);
-      lcd.setCursor(13, 0);
-      lcd.print("OFF");
+    digitalWrite(6, LOW);  // Turn off buzzer
+    // Daytime temperature control
+    if ((rtc.getTime().hour < 23) && (rtc.getTime().hour > 8)) {
+      Serial.println("Day mode");
+      if (t < minDay) {
+        digitalWrite(7, HIGH);  // Turn on relay and led
+        lcd.setCursor(13, 0);
+        lcd.print(" ON");
+      } else if (t > maxDay) {
+        digitalWrite(7, LOW);  // Turn off relay and led
+        lcd.setCursor(13, 0);
+        lcd.print("OFF");
+      } else {
+        lcd.setCursor(13, 0);
+        lcd.print(state == HIGH ? " ON" : "OFF");
+      }
     } else {
-      lcd.setCursor(13, 0);
-      lcd.print(state == HIGH ? " ON" : "OFF");
+      // Nighttime temperature control
+      Serial.println("Night mode");
+      if (t < minNight) {
+        digitalWrite(7, HIGH);  // Turn on relay and led
+        lcd.setCursor(13, 0);
+        lcd.print(" ON");
+      } else if (t > maxNight) {
+        digitalWrite(7, LOW); // Turn off relay and led
+        lcd.setCursor(13, 0);
+        lcd.print("OFF");
+      } else {
+        lcd.setCursor(13, 0);
+        lcd.print(state == HIGH ? " ON" : "OFF");
+      }
     }
   }
 }
